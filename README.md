@@ -1076,12 +1076,19 @@ Each application received complete, production-ready CLI interfaces — not demo
 <td align="center">✅ 22</td>
 </tr>
 <tr>
+<td align="center"><strong>🔩 <a href="3MF/agent-harness/">3MF</a></strong></td>
+<td>Mesh geometry editor for 3D printing</td>
+<td><code>cli-anything-3mf</code></td>
+<td>numpy, scipy, trimesh</td>
+<td align="center">✅ 50</td>
+</tr>
+<tr>
 <td align="center" colspan="4"><strong>Total</strong></td>
-<td align="center"><strong>✅ 2,280</strong></td>
+<td align="center"><strong>✅ 2,330</strong></td>
 </tr>
 </table>
 
-> **100% pass rate** across all 2,280 tests — 1,682 unit tests + 579 end-to-end tests + 19 Node.js tests.
+> **100% pass rate** across all 2,330 tests — 1,732 unit tests + 579 end-to-end tests + 19 Node.js tests.
 
 ---
 
@@ -1125,8 +1132,9 @@ lldb           27 passed  ✅   (23 unit + 4 e2e)
 nsight-graphics 51 passed ✅   (46 unit/CLI + 5 local e2e)
 unrealinsights 50 passed  ✅   (49 unit + 1 e2e, 9 backend-gated e2e skipped)
 cloudanalyzer  14 passed  ✅   (7 unit + 7 e2e)
+3mf            50 passed  ✅   (50 unit)
 ──────────────────────────────────────────────────────────────────────────────
-TOTAL        2,280 passed  ✅   100% pass rate
+TOTAL        2,330 passed  ✅   100% pass rate
 ```
 
 ---
@@ -1211,6 +1219,7 @@ cli-anything/
 ├── ☁️ cloudcompare/agent-harness/       # CloudCompare CLI (88 tests)
 ├── 🔍 exa/agent-harness/               # Exa CLI (40 tests)
 └── ⛅ cloudanalyzer/agent-harness/      # CloudAnalyzer CLI (14 tests)
+└── 🔩 3MF/agent-harness/               # 3MF Mesh Editor CLI (50+ tests)
 ```
 
 Each `agent-harness/` contains an installable Python package under `cli_anything.<software>/` with Click CLI, core modules, utils (including `repl_skin.py` and backend wrapper), and comprehensive tests.
