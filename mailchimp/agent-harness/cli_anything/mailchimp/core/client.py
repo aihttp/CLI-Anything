@@ -50,7 +50,10 @@ class MailchimpClient:
                 "Export it before use: export MAILCHIMP_API_KEY=<key>-<dc>"
             )
         self._key = key
-        self._dc = _server_prefix(key)
+        try:
+            self._dc = _server_prefix(key)
+        except ValueError as e:
+            raise MailchimpAuthError(str(e)) from e
         self._base = _BASE.format(dc=self._dc)
         self._session = requests.Session()
         self._session.auth = ("anystring", key)

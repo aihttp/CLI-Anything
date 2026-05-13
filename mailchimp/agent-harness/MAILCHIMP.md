@@ -4,7 +4,7 @@
 
 `cli-anything-mailchimp` makes the [Mailchimp Marketing API v3.0](https://mailchimp.com/developer/marketing/docs/fundamentals/) fully agent-native. Every endpoint from the official Swagger spec is exposed as a typed Click command, with JSON output and REPL mode.
 
-**292 commands across 30 resource groups**, covering the full Marketing API surface.
+**303 commands across 30 resource groups**, covering the full Marketing API surface.
 
 ---
 
@@ -114,7 +114,7 @@ Collection commands expose Mailchimp's native `count` and `offset` query paramet
 
 ## Design Decisions
 
-1. **Code generation from spec** — 292 commands are auto-generated from Mailchimp's public Swagger 2.0 spec via `_codegen/generate.py`. Generated files are committed so end-users get fast `--help` without downloading the spec.
+1. **Code generation from spec** — 303 commands are auto-generated from Mailchimp's public Swagger 2.0 spec via `_codegen/generate.py`. Generated files are committed so end-users get fast `--help` without downloading the spec.
 
 2. **Env-var-only auth** — per CLI-Anything convention, no config files. `MAILCHIMP_API_KEY` is the single source of truth.
 

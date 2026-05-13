@@ -80,6 +80,21 @@ class TestMailchimpClient(unittest.TestCase):
             if orig:
                 os.environ["MAILCHIMP_API_KEY"] = orig
 
+    def test_get_client_exits_cleanly_on_key_without_suffix(self):
+        from cli_anything.mailchimp.core.client import get_client
+        import os
+
+        orig = os.environ.get("MAILCHIMP_API_KEY")
+        os.environ["MAILCHIMP_API_KEY"] = "invalid"
+        try:
+            with self.assertRaises(SystemExit):
+                get_client()
+        finally:
+            if orig is None:
+                os.environ.pop("MAILCHIMP_API_KEY", None)
+            else:
+                os.environ["MAILCHIMP_API_KEY"] = orig
+
     @resp_lib.activate
     def test_get_success(self):
         from cli_anything.mailchimp.core.client import MailchimpClient

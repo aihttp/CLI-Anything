@@ -87,6 +87,7 @@
 !/macrocli/
 !/sbox/
 !/quietshrink/
+!/mailchimp/
 
 # Step 5: Inside each software dir, ignore everything (including dotfiles)
 /gimp/*
@@ -181,6 +182,8 @@
 /sbox/.*
 /quietshrink/*
 /quietshrink/.*
+/mailchimp/*
+/mailchimp/.*
 
 # Step 6: ...except agent-harness/
 !/gimp/agent-harness/
@@ -235,6 +238,7 @@
 !/macrocli/agent-harness/
 !/sbox/agent-harness/
 !/quietshrink/agent-harness/
+!/mailchimp/agent-harness/
 
 # Exclude non-gedit demo macros from macrocli (local only)
 /macrocli/agent-harness/cli_anything/macrocli/macro_definitions/demo/flameshot*
