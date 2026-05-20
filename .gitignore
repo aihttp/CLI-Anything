@@ -91,7 +91,7 @@
 !/sbox/
 !/quietshrink/
 !/mailchimp/
-
+!/3MF/
 # Step 5: Inside each software dir, ignore everything (including dotfiles)
 /gimp/*
 /gimp/.*
@@ -165,6 +165,8 @@
 /openscreen/.*
 /QGIS/*
 /QGIS/.*
+/3MF/*
+/3MF/.*
 /cloudanalyzer/*
 /cloudanalyzer/.*
 /wiremock/*
@@ -228,6 +230,7 @@
 !/renderdoc/agent-harness/
 !/cloudcompare/agent-harness/
 !/openscreen/agent-harness/
+!/3MF/agent-harness/
 !/cloudanalyzer/
 !/cloudanalyzer/agent-harness/
 !/wiremock/
