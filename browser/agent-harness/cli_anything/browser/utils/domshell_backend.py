@@ -156,30 +156,6 @@ def _assert_single_line(field: str, value: str) -> None:
         )
 
 
-def _is_error(result: Any) -> bool:
-    """Best-effort check that a ``domshell_execute`` result represents an error.
-
-    Inspects ``isError`` if the MCP SDK populated it; otherwise scans the
-    concatenated text content for a leading "error". Robust to both the
-    raw ``CallToolResult`` object and the dict shapes used in unit tests.
-    """
-    if hasattr(result, "isError") and result.isError:
-        return True
-    if isinstance(result, dict):
-        if result.get("isError"):
-            return True
-        if "error" in result:
-            return True
-    text = ""
-    content = getattr(result, "content", None)
-    if content:
-        for c in content:
-            piece = getattr(c, "text", None)
-            if piece:
-                text += piece
-    return text.strip().lower().startswith("error")
-
-
 async def _call_execute(command: str, use_daemon: bool = False) -> Any:
     """Run a DOMShell command via the single `domshell_execute` MCP tool.
 
@@ -361,12 +337,15 @@ def grep(
     """Search for pattern in the accessibility tree.
 
     When ``path`` is provided and is not ``/``, the search is rooted at that
-    path: ``cd`` into it, ``grep``, then ``cd`` back to ``prev``. The three
-    steps run as separate ``domshell_execute`` calls with the restore in a
-    ``finally`` block, so the cwd is restored even if ``grep`` errors
-    mid-flight. (A single multi-line call would be one round-trip instead of
-    three, but it relies on DOMShell's currently-undocumented continue-past-
-    error behavior — see PR review.)
+    path: ``cd`` into it, ``grep``, then ``cd`` back to ``prev`` — sent as one
+    multi-line ``domshell_execute`` call so all three lines share an MCP
+    session (and therefore a DOMShell lane / cwd). Each ``_call_execute`` in
+    non-daemon mode opens a fresh stdio session that lands in its own
+    DOMShell 2.x lane, so splitting cd/grep/restore across separate calls
+    would lose the cwd between them. The trailing ``cd prev`` is delivered as
+    the final line of the same command and runs even if ``grep`` errors —
+    DOMShell's multi-line splitter continues past errors (see
+    `apireno/DOMShell#46 <https://github.com/apireno/DOMShell/issues/46>`_).
 
     ``path``, ``prev``, and ``use_daemon`` are keyword-only to prevent silent
     breakage of callers written against the pre-migration positional
@@ -389,17 +368,12 @@ def grep(
         >>> grep("Login", path="/main")
         {"matches": ["/main/button[0]"]}
     """
+    _assert_single_line("pattern", pattern)
     if path and path != "/":
         _assert_single_line("path", path)
         _assert_single_line("prev", prev)
-        _assert_single_line("pattern", pattern)
-        cd_result = asyncio.run(_call_execute(f"cd {_q(path)}", use_daemon))
-        if _is_error(cd_result):
-            return cd_result
-        try:
-            return asyncio.run(_call_execute(f"grep {_q(pattern)}", use_daemon))
-        finally:
-            asyncio.run(_call_execute(f"cd {_q(prev)}", use_daemon))
+        command = f"cd {_q(path)}\ngrep {_q(pattern)}\ncd {_q(prev)}"
+        return asyncio.run(_call_execute(command, use_daemon))
     return asyncio.run(_call_execute(f"grep {_q(pattern)}", use_daemon))
 
 

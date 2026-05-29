@@ -26,57 +26,53 @@ def test_grep_unrooted_produces_single_grep_call(mock_call):
 
 
 @patch.object(backend, "_call_execute", new_callable=AsyncMock)
-def test_grep_rooted_produces_three_calls_in_order(mock_call):
-    """Rooted grep dispatches cd → grep → cd-back, in that order."""
+def test_grep_rooted_emits_single_multiline_call(mock_call):
+    """Rooted grep is ONE multi-line ``cd / grep / cd back`` execute call.
+
+    Each ``_call_execute`` in non-daemon mode opens a fresh MCP session
+    that lands in its own DOMShell 2.x lane, so splitting cd / grep /
+    restore across separate calls would lose the cwd between them. The
+    three lines must travel in one ``domshell_execute`` call to share
+    a lane.
+    """
     mock_call.return_value = {}
 
     backend.grep("Login", path="/main", prev="/")
 
     assert mock_call.call_args_list == [
-        call("cd /main", False),
-        call("grep Login", False),
-        call("cd /", False),
+        call("cd /main\ngrep Login\ncd /", False),
     ]
 
 
 @patch.object(backend, "_call_execute", new_callable=AsyncMock)
-def test_grep_rooted_restores_cwd_when_grep_raises(mock_call):
-    """If grep errors mid-flight, the trailing cd-back still runs (try/finally)."""
-    mock_call.side_effect = [
-        {},                            # cd /main → success
-        RuntimeError("grep blew up"),  # grep → raise
-        {},                            # cd / (restore) — required
-    ]
+def test_grep_rooted_uses_single_call_for_lane_isolation(mock_call):
+    """Documents the lane-isolation contract: ONE call, not three.
 
-    with pytest.raises(RuntimeError, match="grep blew up"):
-        backend.grep("Login", path="/main", prev="/")
+    The trailing ``cd prev`` is delivered as the final line of the same
+    multi-line command and runs even if ``grep`` errors, per DOMShell's
+    documented continue-on-error semantics
+    (`apireno/DOMShell#46 <https://github.com/apireno/DOMShell/issues/46>`_).
+    """
+    mock_call.return_value = {}
 
-    assert mock_call.call_count == 3
-    assert mock_call.call_args_list[-1] == call("cd /", False)
+    backend.grep("Login", path="/main", prev="/")
 
-
-@patch.object(backend, "_call_execute", new_callable=AsyncMock)
-def test_grep_rooted_short_circuits_when_cd_errors(mock_call):
-    """If the initial cd reports an error, grep is skipped and no restore is sent."""
-    mock_call.return_value = {"isError": True, "error": "no such path"}
-
-    result = backend.grep("Login", path="/missing", prev="/")
-
-    # Only the initial cd ran; grep + restore were skipped.
-    assert mock_call.call_args_list == [call("cd /missing", False)]
-    assert result == {"isError": True, "error": "no such path"}
+    assert mock_call.call_count == 1
 
 
 @patch.object(backend, "_call_execute", new_callable=AsyncMock)
 def test_grep_rooted_quotes_path_with_spaces(mock_call):
-    """Paths with whitespace are shell-quoted before interpolation."""
+    """Paths with whitespace are shell-quoted inside the multi-line command."""
     mock_call.return_value = {}
 
     backend.grep("Login", path="/path with spaces", prev="/")
 
-    cd_cmd = mock_call.call_args_list[0].args[0]
-    # shlex.quote single-quotes anything containing whitespace.
-    assert cd_cmd == "cd '/path with spaces'"
+    cmd = mock_call.call_args.args[0]
+    # shlex.quote single-quotes anything containing whitespace; the rest
+    # of the multi-line layout (grep + cd back) stays intact.
+    assert cmd.startswith("cd '/path with spaces'\n")
+    assert "\ngrep Login\n" in cmd
+    assert cmd.endswith("\ncd /")
 
 
 @patch.object(backend, "_call_execute", new_callable=AsyncMock)
