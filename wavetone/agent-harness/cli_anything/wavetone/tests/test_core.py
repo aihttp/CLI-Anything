@@ -75,6 +75,27 @@ def test_update_analysis_settings(tmp_path: Path) -> None:
     assert project["analysis"]["analyze_fundamental_frequency"] is False
 
 
+def test_cli_analysis_preserves_omitted_boolean_flags(tmp_path: Path) -> None:
+    wav = make_wav(tmp_path / "tone.wav")
+    project = create_project(wav)
+    project["analysis"]["analyze_fundamental_frequency"] = True
+    project["analysis"]["skip_analysis_dialog"] = True
+    project_path = save_project(project, tmp_path / "tone.wt.json")
+
+    result = CliRunner().invoke(cli, ["--json", "project", "analysis", "--channel", "R", str(project_path)])
+
+    assert result.exit_code == 0, result.output
+    data = json.loads(result.output)
+    assert data["analysis"]["channel"] == "R"
+    assert data["analysis"]["analyze_fundamental_frequency"] is True
+    assert data["analysis"]["skip_analysis_dialog"] is True
+
+    loaded = load_project(project_path)
+    assert loaded["analysis"]["channel"] == "R"
+    assert loaded["analysis"]["analyze_fundamental_frequency"] is True
+    assert loaded["analysis"]["skip_analysis_dialog"] is True
+
+
 def test_rejects_non_finite_project_numbers(tmp_path: Path) -> None:
     wav = make_wav(tmp_path / "tone.wav")
     project = create_project(wav)

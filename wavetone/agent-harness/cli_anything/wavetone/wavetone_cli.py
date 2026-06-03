@@ -190,8 +190,10 @@ def project_set_tempo(ctx: click.Context, bpm: float, first_bar_time_seconds: fl
 @click.option("--note-range")
 @click.option("--reference-frequency-hz", type=float)
 @click.option("--channel", type=click.Choice(["Stereo", "L-R", "L+R", "L", "R"]))
-@click.option("--fundamental/--no-fundamental", default=None)
-@click.option("--skip-dialog/--show-dialog", default=None)
+@click.option("--fundamental", "fundamental", flag_value=True, default=None)
+@click.option("--no-fundamental", "fundamental", flag_value=False, default=None)
+@click.option("--skip-dialog", "skip_dialog", flag_value=True, default=None)
+@click.option("--show-dialog", "skip_dialog", flag_value=False, default=None)
 @click.argument("project_path", required=False, type=click.Path(exists=True, dir_okay=False))
 @click.pass_context
 def project_analysis(
