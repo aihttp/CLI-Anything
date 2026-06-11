@@ -1012,6 +1012,13 @@ Each application received complete, production-ready CLI interfaces — not demo
 <td align="center">✅ <a href="browser/agent-harness/">New</a></td>
 </tr>
 <tr>
+<td align="center"><strong><a href="web-yu-pri/agent-harness/">Web Yu-pri</a></strong></td>
+<td>Japan Post Shipping Labels</td>
+<td><code>cli-anything-web-yu-pri</code></td>
+<td>Playwright + Web Yu-pri forms</td>
+<td align="center">✅ <a href="web-yu-pri/agent-harness/">New</a></td>
+</tr>
+<tr>
 <td align="center"><strong>📄 LibreOffice</strong></td>
 <td>Office Suite (Writer, Calc, Impress)</td>
 <td><code>cli-anything-libreoffice</code></td>
@@ -1370,6 +1377,7 @@ cli-anything/
 ├── 🎵 audacity/agent-harness/           # Audacity CLI (161 tests)
 ├── wavetone/agent-harness/              # WaveTone CLI (32 tests: 30 default + 2 backend-gated e2e)
 ├── 🌐 browser/agent-harness/            # Browser CLI (DOMShell MCP, new)
+├── 🌐 web-yu-pri/agent-harness/         # Japan Post Web Yu-pri CLI (new)
 ├── 📄 libreoffice/agent-harness/        # LibreOffice CLI (158 tests)
 ├── 📧 mailchimp/agent-harness/          # Mailchimp Marketing API CLI (303 commands, 36 unit tests)
 ├── 📚 zotero/agent-harness/             # Zotero CLI (new, write import support)

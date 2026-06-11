@@ -158,6 +158,25 @@
       ]
     },
     {
+      "name": "web-yu-pri",
+      "display_name": "Web Yu-pri",
+      "version": "0.1.0",
+      "description": "Japan Post Web Yu-pri browser workflow automation for login, inspection, screenshots, dry-run planning, and contents-form filling",
+      "requires": "Japan Post Web Yu-pri account, Playwright, Microsoft Edge/Chrome or Playwright Chromium",
+      "homepage": "https://mgr.post.japanpost.jp/C30P01Action.do",
+      "source_url": null,
+      "install_cmd": "pip install git+https://github.com/HKUDS/CLI-Anything.git#subdirectory=web-yu-pri/agent-harness",
+      "entry_point": "cli-anything-web-yu-pri",
+      "skill_md": "skills/cli-anything-web-yu-pri/SKILL.md",
+      "category": "web",
+      "contributors": [
+        {
+          "name": "shinpei710",
+          "url": "https://github.com/shinpei710"
+        }
+      ]
+    },
+    {
       "name": "comfyui",
       "display_name": "ComfyUI",
       "version": "1.0.0",

@@ -70,6 +70,7 @@
 !/minimax/
 !/ollama/
 !/browser/
+!/web-yu-pri/
 !/seaclip/
 !/pm2/
 !/chromadb/
@@ -143,6 +144,8 @@
 /ollama/.*
 /browser/*
 /browser/.*
+/web-yu-pri/*
+/web-yu-pri/.*
 /seaclip/*
 /seaclip/.*
 /pm2/*
@@ -231,6 +234,7 @@
 !/minimax/agent-harness/
 !/ollama/agent-harness/
 !/browser/agent-harness/
+!/web-yu-pri/agent-harness/
 !/seaclip/agent-harness/
 !/pm2/agent-harness/
 !/chromadb/agent-harness/
